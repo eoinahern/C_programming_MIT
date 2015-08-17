@@ -82,11 +82,15 @@ void pq_insert(struct tnode* p)
 	 
 	
 	
-	if(p->freq < qhead->freq)
+	if(p->freq <= qhead->freq)
 	{
 		curr = qhead;
 		prev = p;
 	}
+        
+
+	//tie break if freq == freq
+	//check alphabetical order
 	
 		
 	
@@ -122,22 +126,37 @@ void pq_insert(struct tnode* p)
 		prev = qhead->next; 
 
 		//after inserting head , qhead-> next
-		//will be null. terefore while wont run!!
-		if(prev == NULL)
-			curr->next = p;  
+		//will be null. therefore while wont run!!
+		  
 
 		
 		
-		while(prev != NULL)
+		while(curr != NULL)
 		{
 			//comparison and insert
+			if(prev == NULL && p->freq <= curr->freq )
+			{
+				p->next = curr;
+				qhead = p;
+				return;
+			}
+			else if(prev == NULL && p->freq > curr->freq)
+			{
 
-			if(p->freq <  prev->freq)
+				curr->next = p;
+				return;
+				
+
+
+			}
+
+			else if(p->freq <=  prev->freq)
 			{
 				curr->next = p;
 				p->next = prev;	
 				return;
 			}
+                         
 			
 			else
 			{
@@ -193,6 +212,25 @@ void generate_code(struct tnode* root,int depth)
 			TODO: follow parent pointer to the top
 			to generate the code string
 		*/
+		
+
+		printf("depth  : %d\n", len);
+                printf("symbol : %c \n", symbol);
+		while(len > 0)
+		{
+
+			printf("%d", root->isleaf);
+			code[symbol][len] =  root->isleaf;
+			len--;
+			depth--;
+			root = root->parent;
+		}
+
+		printf("\n");
+
+
+
+
 		printf("built code:%c,%s\n",symbol,code[symbol]);
 	}
 	else
@@ -236,20 +274,22 @@ int main()
 {
     /*test pq*/
     struct tnode* p=NULL;
-    //struct tnode* lc,*rc;
-    //float freq[]={0.01,0.04,0.05,0.11,0.19,0.20,0.4};
-	//int   NCHAR=7; /*number of characters*/
-    //int i=0;
-	//const char *CODE_FILE="code.txt";
-	//const char *OUT_FILE="encoded.txt";
-	//FILE* fout=NULL;
+    struct tnode* lc,*rc;
+    float freq[]={0.01,0.04,0.05,0.11,0.19,0.20,0.4};
+    int   NCHAR=7; /*number of characters*/
+    int i=0;
+    const char *CODE_FILE="code.txt";
+    const char *OUT_FILE="encoded.txt";
+    FILE* fout=NULL;
 	/*zero out code*/
-	memset(code,0,sizeof(code));
+    memset(code,0,sizeof(code));
 
 	/*testing queue*/
     pq_insert(talloc('a', 0.1));
     pq_insert(talloc('b', 0.2));
     pq_insert(talloc('c', 0.15));
+    pq_insert(talloc('g', 0.3));
+    pq_insert(talloc('x', 0.002));
     		
     /*making sure it pops in the right order*/
 	puts("making sure it pops in the right order");
@@ -264,53 +304,55 @@ int main()
 	
     }
 
-	return 0;
+	
 
 
 
 	
-     	//qhead=NULL;
+    qhead=NULL;
     /*initialize with freq*/
-    /*for(i=0;i<NCHAR;i++)
+    for(i=0;i<NCHAR;i++)
     {
         pq_insert(talloc('a'+i,freq[i]));
-    } */
+    } 
     /*build tree*/
-    /*for(i=0;i<NCHAR-1;i++)
-    {*/
-        //lc=pq_pop();
-        //rc=pq_pop();
+    for(i=0;i<NCHAR-1;i++)
+    {
+        lc=pq_pop();
+        
+        rc=pq_pop();
+        
         /*create parent*/
-        //p=talloc(0,lc->freq+rc->freq);
+        p=talloc(0,lc->freq+rc->freq);
         /*set parent link*/
-        //lc->parent=rc->parent=p;
+        lc->parent=rc->parent=p;
         /*set child link*/
-        //p->right=rc; p->left=lc;
+        p->right=rc; p->left=lc;
 		/*make it non-leaf*/
-	//	p->isleaf=0;
+		p->isleaf=0;
         /*add the new node to the queue*/
-        //pq_insert(p);
-    //}
+        pq_insert(p);
+    }
     /*get root*/
-   // root=pq_pop();
+     root=pq_pop();
 	/*build code*/
-	//generate_code(root,0);
+	generate_code(root,0);
 	/*output code*/
-	//puts("code:");
-	//fout=fopen(CODE_FILE,"w");
-	//dump_code(stdout);
-	//dump_code(fout);
-	//fclose(fout);
+	puts("code:");
+	fout=fopen(CODE_FILE,"w");
+	dump_code(stdout);
+	dump_code(fout);
+	fclose(fout);
 
 	/*encode a sample string*/
-	//puts("orginal:abba cafe bad");
-	//fout=fopen(OUT_FILE,"w");
-	//encode("abba cafe bad",stdout);
-	//encode("abba cafe bad",fout);
-	//fclose(fout);
-	//getchar(); 
+	puts("orginal:abba cafe bad");
+	fout=fopen(OUT_FILE,"w");
+	encode("abba cafe bad",stdout);
+	encode("abba cafe bad",fout);
+	fclose(fout);
+	
 	/*TODO: clear resources*/
-    //return 0; 
+    return 0; 
 
 	
 }
