@@ -110,11 +110,11 @@ void decode(FILE* fin,FILE* fout)
 	while((c=getc(fin))!=EOF)
 	{
 
-			// traverse the tree with the
-			// binary code we are reading from the file.
-			//when you get to leaf node print the "SYMBOL/letter"
-			//then, set current to root!! begin again
-			//
+			/* traverse the tree with the
+			 binary code we are reading from the file.
+			 when you get to leaf node print the "SYMBOL/letter"
+			 then, set current to root!! begin again */
+			
 			
 			
 		if(c == '1' && curr->right == NULL)
