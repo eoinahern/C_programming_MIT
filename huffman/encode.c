@@ -207,30 +207,49 @@ void generate_code(struct tnode* root,int depth)
 		symbol=root->symbol;
 		len   =depth;
 		/*start backwards*/
-		code[symbol][len]=0;
-		/*
-			TODO: follow parent pointer to the top
-			to generate the code string
-		*/
 		
 
 		printf("depth  : %d\n", len);
                 printf("symbol : %c \n", symbol);
-		while(len > 0)
-		{
+		printf("is leaf : %d \n", root->isleaf);
+		
 
-			printf("%d", root->isleaf);
-			code[symbol][len] =  root->isleaf;
+		while( len > 0)
+		{
+			//travese back up the tree
+			//adding 1 if child node has same
+			//symbol as root and is on the right.
+			//adding 0 if child node has same 'symbol'
+			//and is the left child node to the root
+
+			struct tnode * parent = NULL;	
+			parent = root->parent;
+			parent->symbol = root->symbol;
+		
+			
+
+			if(parent == NULL)
+			{
+				len--;
+				continue;
+			}
+			if(parent->left->symbol ==root->symbol)
+			{
+				
+				code[symbol][len -1] = '0';	
+			}
+			else if(parent->right->symbol == root->symbol)
+			{
+
+				code[symbol][len -1] = '1';
+			}
+
+
 			len--;
-			depth--;
-			root = root->parent;
+			root = parent;
 		}
 
-		printf("\n");
-
-
-
-
+		printf("attemting to print string at %d index of code\n", symbol);
 		printf("built code:%c,%s\n",symbol,code[symbol]);
 	}
 	else
