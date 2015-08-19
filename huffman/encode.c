@@ -74,29 +74,17 @@ void pq_insert(struct tnode* p)
 
 
 		qhead = p;
-		printf("setting head as %c \n", p->symbol);
 		return;
 
    }
-   /*TODO: write code to find correct position to insert*/
 	 
-	
-	
-	if(p->freq <= qhead->freq)
-	{
+   if(p->freq <= qhead->freq)
+   {
 		curr = qhead;
 		prev = p;
-	}
-        
-
-	//tie break if freq == freq
-	//check alphabetical order
-	
+   }
 		
 	
-
-
-
    if(curr==qhead)//curr is always set to null when method called????
    {
    	 	/*TODO: write code to insert before the current start*/
@@ -124,12 +112,6 @@ void pq_insert(struct tnode* p)
 
 		curr = qhead;
 		prev = qhead->next; 
-
-		//after inserting head , qhead-> next
-		//will be null. therefore while wont run!!
-		  
-
-		
 		
 		while(curr != NULL)
 		{
@@ -145,19 +127,13 @@ void pq_insert(struct tnode* p)
 
 				curr->next = p;
 				return;
-				
-
-
 			}
-
 			else if(p->freq <=  prev->freq)
 			{
 				curr->next = p;
 				p->next = prev;	
 				return;
 			}
-                         
-			
 			else
 			{
 				curr = curr->next;
@@ -206,12 +182,6 @@ void generate_code(struct tnode* root,int depth)
 	{
 		symbol=root->symbol;
 		len   =depth;
-		/*start backwards*/
-		
-
-		printf("depth  : %d\n", len);
-                printf("symbol : %c \n", symbol);
-		printf("is leaf : %d \n", root->isleaf);
 		
 
 		while( len > 0)
@@ -249,7 +219,6 @@ void generate_code(struct tnode* root,int depth)
 			root = parent;
 		}
 
-		printf("attemting to print string at %d index of code\n", symbol);
 		printf("built code:%c,%s\n",symbol,code[symbol]);
 	}
 	else
@@ -285,6 +254,7 @@ void encode(char* str,FILE* fout)
 		fprintf(fout,"%s",code[*str]);
 		str++;
 	}
+        printf("\n");
 }
 /*
     @function main
@@ -322,11 +292,6 @@ int main()
 	}
 	
     }
-
-	
-
-
-
 	
     qhead=NULL;
     /*initialize with freq*/
@@ -369,9 +334,11 @@ int main()
 	encode("abba cafe bad",stdout);
 	encode("abba cafe bad",fout);
 	fclose(fout);
-	
-	/*TODO: clear resources*/
-    return 0; 
 
-	
+	free(root);
+	free(lc);
+	free(rc);
+	return 0;
+
+
 }
